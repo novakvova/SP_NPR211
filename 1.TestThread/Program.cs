@@ -6,9 +6,7 @@
         private static volatile bool _isCanceled = false;
         public static void Main(String[] args)
         {
-            // See https://aka.ms/new-console-template for more information
-            Console.WriteLine("Привіт!");
-
+            GetSystemInfo();
             Thread yellowThread = new Thread(() => MyThreadYellowMethod(8));
             yellowThread.Start();
 
@@ -27,10 +25,16 @@
             Console.WriteLine("Програма завершила свою роботу...");
         }
 
+        public static void GetSystemInfo()
+        {
+            int coreCount = Environment.ProcessorCount;
+            Console.WriteLine($"Кількість доступних процесорних ядер: {coreCount}");
+        }
+
         public static void MyThreadYellowMethod(int n)
         {
             int threadId = Thread.CurrentThread.ManagedThreadId; //ідентифікатор потоку
-            for (int i = 0;i<n;i++)
+            for (int i=0; i<n; i++)
             {
                 if (_isCanceled)
                 {
