@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.TestThread", "1.TestThread\1.TestThread.csproj", "{7B26F861-7CC9-487A-AF04-8EEEE28B6FAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfAppThread", "WpfAppThread\WpfAppThread.csproj", "{EFE1054F-FF42-4455-B446-B324F4F341F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7B26F861-7CC9-487A-AF04-8EEEE28B6FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B26F861-7CC9-487A-AF04-8EEEE28B6FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B26F861-7CC9-487A-AF04-8EEEE28B6FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE1054F-FF42-4455-B446-B324F4F341F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE1054F-FF42-4455-B446-B324F4F341F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE1054F-FF42-4455-B446-B324F4F341F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE1054F-FF42-4455-B446-B324F4F341F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
