@@ -23,7 +23,28 @@ namespace WpfAppThread
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Add items " + txtCount.Text);
+            //MessageBox.Show("Add items " + txtCount.Text);
+            btnRun.IsEnabled = false;
+            double count = double.Parse(txtCount.Text);
+            Thread thread = new Thread(() =>
+                InsertItems(count));
+
+            thread.Start();
+        }
+
+        private void InsertItems(double count)
+        {
+            Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
+            
+            for (int i = 0; i < count; i++)
+            {
+                Dispatcher.Invoke(() => { pbStatus.Value = i + 1; });
+                
+                Thread.Sleep(100);
+            }
+
+            Dispatcher.Invoke(() => { btnRun.IsEnabled = true; });
+            
         }
     }
 }

@@ -11,10 +11,22 @@
                 Content="Додати дані" HorizontalAlignment="Left" 
                 Margin="223,38,0,0" VerticalAlignment="Top" 
                 Height="33" Width="129" FontSize="14" Click="btnRun_Click"/>
-        
+
         <TextBox Name="txtCount" HorizontalAlignment="Left" Margin="40,42,0,0"
                  FontSize="18" TextWrapping="Wrap" Text="10" 
                  VerticalAlignment="Top" Width="158"/>
+
+        <Grid HorizontalAlignment="Left" Height="25" 
+              Margin="26,363,0,0" VerticalAlignment="Top"
+              Width="436">
+            <ProgressBar Minimum="0" Maximum="100" Value="0" Name="pbStatus" />
+            <TextBlock 
+                Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}}" 
+                HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+
+
+
 
     </Grid>
 </Window>
