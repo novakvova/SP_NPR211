@@ -56,11 +56,24 @@ namespace WpfAppThread
         private void UserService_InsertUserEvent(int count)
         {
             Dispatcher.Invoke(() => { pbStatus.Value = count; });
+            _manualEvent.WaitOne(Timeout.Infinite); //якщо потік заблоковано, то очікуємо
+            //поки його буде розблоковано
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
+            if(_isPause)
+            {
+                _manualEvent.Set(); // розблоковуємо потік
+                btnPause.Content = "Призупинити";
+            }
+            else
+            {
+                _manualEvent.Reset(); //лочимо потік
+                btnPause.Content = "Продовжити";
+            }
 
+            _isPause = !_isPause;
         }
     }
 }
