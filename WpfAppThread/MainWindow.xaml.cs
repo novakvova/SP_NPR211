@@ -84,6 +84,7 @@ namespace WpfAppThread
 
         private void btnBreak_Click(object sender, RoutedEventArgs e)
         {
+            
             ctSource.Cancel();
             btnRun.IsEnabled = true;
             pbStatus.Value = 0.0;

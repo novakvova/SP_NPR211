@@ -22,8 +22,9 @@ namespace Infrastraction.Services
             _dataContext.Database.Migrate();
         }
 
-        public UserService(CancellationToken token) : base()
+        public UserService(CancellationToken token) : this()
         {
+            
             cancellationToken = token;
         }
 
@@ -47,6 +48,7 @@ namespace Infrastraction.Services
 
                     if(cancellationToken.IsCancellationRequested)
                     {
+                        InsertRandomUser(0); //операція була скасована
                         return;
                     }
                 }
