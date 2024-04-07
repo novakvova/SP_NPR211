@@ -16,7 +16,7 @@
                  FontSize="18" TextWrapping="Wrap" Text="10" 
                  VerticalAlignment="Top" Width="158"/>
 
-        <Grid HorizontalAlignment="Left" Height="25" 
+        <Grid HorizontalAlignment="Left" Height="35" 
               Margin="26,363,0,0" VerticalAlignment="Top"
               Width="436">
             <ProgressBar Minimum="0" Maximum="100" Value="0" Name="pbStatus" />

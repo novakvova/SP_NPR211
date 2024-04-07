@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Infrastraction.Services;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -34,17 +35,20 @@ namespace WpfAppThread
 
         private void InsertItems(double count)
         {
+            UserService userService = new UserService();
+            userService.InsertUserEvent += UserService_InsertUserEvent;
+
             Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
-            
-            for (int i = 0; i < count; i++)
-            {
-                Dispatcher.Invoke(() => { pbStatus.Value = i + 1; });
-                
-                Thread.Sleep(100);
-            }
+            userService.InsertRandomUser((int)count);
+
 
             Dispatcher.Invoke(() => { btnRun.IsEnabled = true; });
             
+        }
+
+        private void UserService_InsertUserEvent(int count)
+        {
+            Dispatcher.Invoke(() => { pbStatus.Value = count; });
         }
     }
 }
