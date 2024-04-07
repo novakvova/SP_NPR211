@@ -17,11 +17,15 @@ namespace WpfAppThread
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CancellationTokenSource ctSource;
+        private CancellationToken cancelletaionToken;
+
         //маємо можливість блокувати роботу потоку.
-        //
         private static ManualResetEvent _manualEvent = new(false); // Initialize as unsignaled
         private bool _isPause = false;
-        
+        Thread thread;
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,10 +33,12 @@ namespace WpfAppThread
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
+            ctSource = new CancellationTokenSource();
+            cancelletaionToken = ctSource.Token;
             //MessageBox.Show("Add items " + txtCount.Text);
             btnRun.IsEnabled = false;
             double count = double.Parse(txtCount.Text);
-            Thread thread = new Thread(() =>
+            thread = new Thread(() =>
                 InsertItems(count));
 
             thread.Start(); //стартуємо вториний потік, який додає користувачів в БД
@@ -42,7 +48,7 @@ namespace WpfAppThread
 
         private void InsertItems(double count)
         {
-            UserService userService = new UserService();
+            UserService userService = new UserService(cancelletaionToken);
             userService.InsertUserEvent += UserService_InsertUserEvent;
 
             Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
@@ -74,6 +80,13 @@ namespace WpfAppThread
             }
 
             _isPause = !_isPause;
+        }
+
+        private void btnBreak_Click(object sender, RoutedEventArgs e)
+        {
+            ctSource.Cancel();
+            btnRun.IsEnabled = true;
+            pbStatus.Value = 0.0;
         }
     }
 }

@@ -28,6 +28,10 @@
             Content="Призупинити" HorizontalAlignment="Left" 
             Margin="40,101,0,0" VerticalAlignment="Top" 
             Height="33" Width="116" FontSize="14" Click="btnPause_Click"/>
+        <Button x:Name="btnBreak"
+            Content="Перервать" HorizontalAlignment="Left" 
+            Margin="186,101,0,0" VerticalAlignment="Top" 
+            Height="33" Width="116" FontSize="14" Click="btnBreak_Click"/>
 
 
 

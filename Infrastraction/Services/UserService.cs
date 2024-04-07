@@ -14,11 +14,17 @@ namespace Infrastraction.Services
     public class UserService
     {
         private readonly MyDataContext _dataContext;
+        private CancellationToken cancellationToken;
 
         public event UserInsertItemDelegate InsertUserEvent;
         public UserService() {
             _dataContext = new MyDataContext();
             _dataContext.Database.Migrate();
+        }
+
+        public UserService(CancellationToken token) : base()
+        {
+            cancellationToken = token;
         }
 
         public void InsertRandomUser(int count)
@@ -31,12 +37,23 @@ namespace Infrastraction.Services
 
             var users = faker.Generate(count); // Generate 20 dummy users
             int i = 0;
-            foreach (var user in users)
+            using (var transaction = _dataContext.Database.BeginTransaction())
             {
-                _dataContext.Users.Add(user);
-                _dataContext.SaveChanges();
-                InsertUserEvent(++i);
+                foreach (var user in users)
+                {
+                    _dataContext.Users.Add(user);
+                    _dataContext.SaveChanges();
+                    InsertUserEvent(++i);
+
+                    if(cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                }
+                // Commit the transaction
+                transaction.Commit();
             }
+                
         }
 
     }
