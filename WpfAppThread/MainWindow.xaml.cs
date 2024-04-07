@@ -87,7 +87,7 @@ namespace WpfAppThread
             
             ctSource.Cancel();
             btnRun.IsEnabled = true;
-            pbStatus.Value = 0.0;
+            pbStatus.Value = 0;
         }
     }
 }

@@ -40,20 +40,27 @@ namespace Infrastraction.Services
             int i = 0;
             using (var transaction = _dataContext.Database.BeginTransaction())
             {
-                foreach (var user in users)
+                try
                 {
-                    _dataContext.Users.Add(user);
-                    _dataContext.SaveChanges();
-                    InsertUserEvent(++i);
-
-                    if(cancellationToken.IsCancellationRequested)
+                    foreach (var user in users)
                     {
-                        InsertRandomUser(0); //операція була скасована
-                        return;
+                        _dataContext.Users.Add(user);
+                        _dataContext.SaveChanges();
+                        InsertUserEvent(++i);
+
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            throw new Exception("Cansel operation");
+                        }
                     }
+                    // Commit the transaction
+                    transaction.Commit();
                 }
-                // Commit the transaction
-                transaction.Commit();
+                catch (Exception)
+                {
+                    transaction.Rollback(); // Rollback the transaction if an exception occurs
+                    InsertRandomUser(0); //операція була скасована
+                }
             }
                 
         }
