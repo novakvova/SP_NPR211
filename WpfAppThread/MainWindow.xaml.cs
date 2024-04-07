@@ -17,6 +17,11 @@ namespace WpfAppThread
     /// </summary>
     public partial class MainWindow : Window
     {
+        //маємо можливість блокувати роботу потоку.
+        //
+        private static ManualResetEvent _manualEvent = new ManualResetEvent(false); // Initialize as unsignaled
+        private bool _isPause = false;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -30,7 +35,9 @@ namespace WpfAppThread
             Thread thread = new Thread(() =>
                 InsertItems(count));
 
-            thread.Start();
+            thread.Start(); //стартуємо вториний потік, який додає користувачів в БД
+            //Запускаємо, але потік поки не блокуємо.
+            _manualEvent.Set();
         }
 
         private void InsertItems(double count)
@@ -49,6 +56,11 @@ namespace WpfAppThread
         private void UserService_InsertUserEvent(int count)
         {
             Dispatcher.Invoke(() => { pbStatus.Value = count; });
+        }
+
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
