@@ -19,7 +19,7 @@ namespace WpfAppThread
     {
         //маємо можливість блокувати роботу потоку.
         //
-        private static ManualResetEvent _manualEvent = new ManualResetEvent(false); // Initialize as unsignaled
+        private static ManualResetEvent _manualEvent = new(false); // Initialize as unsignaled
         private bool _isPause = false;
         
         public MainWindow()
