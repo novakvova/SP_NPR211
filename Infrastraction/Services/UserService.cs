@@ -6,6 +6,8 @@ using Infrastraction.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SQLite;
 using Dapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Transactions;
 
 namespace Infrastraction.Services
 {
@@ -85,14 +87,33 @@ namespace Infrastraction.Services
 
             var users = faker.Generate(count); // Generate 20 dummy users
             int i = 0;
-
-            foreach (var user in users)
+            try
             {
                 using var conn = new SQLiteConnection(AppDatabase.ConnectionString);
-                string query = "INSERT INTO tblUsers (LastName, FistName, Email, PhoneNumber) " +
-                    "VALUES (@LastName, @FistName, @Email, @PhoneNumber) ";
-                conn.Execute(query, user);
-                InsertUserEvent(++i);
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    foreach (var user in users)
+                    {
+
+                        string query = "INSERT INTO tblUsers (LastName, FistName, Email, PhoneNumber) " +
+                        "VALUES (@LastName, @FistName, @Email, @PhoneNumber) ";
+                        conn.Execute(query, user);
+                        InsertUserEvent(++i);
+
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            throw new Exception("Cansel operation");
+                        }
+                    }
+                    transaction.Commit();
+
+                }
+            }
+            catch (Exception)
+            {
+                //transaction.Rollback(); // Rollback the transaction if an exception occurs
+                InsertRandomUser(0); //операція була скасована
             }
         }
 
