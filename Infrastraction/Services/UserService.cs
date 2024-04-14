@@ -1,13 +1,11 @@
 ﻿using Bogus;
+using Domain.Constants;
 using Domain.Data;
 using Domain.Data.Entities;
 using Infrastraction.Events;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SQLite;
+using Dapper;
 
 namespace Infrastraction.Services
 {
@@ -17,14 +15,15 @@ namespace Infrastraction.Services
         private CancellationToken cancellationToken;
 
         public event UserInsertItemDelegate InsertUserEvent;
-        public UserService() {
+        public UserService()
+        {
             _dataContext = new MyDataContext();
             _dataContext.Database.Migrate();
         }
 
         public UserService(CancellationToken token) : this()
         {
-            
+
             cancellationToken = token;
         }
 
@@ -62,8 +61,37 @@ namespace Infrastraction.Services
                     InsertRandomUser(0); //операція була скасована
                 }
             }
-                
+
         }
 
+
+        public List<UserEntity> GetUsers()
+        {
+            using var conn = new SQLiteConnection(AppDatabase.ConnectionString);
+            string query = "SELECT Id, LastName, FistName, Email, PhoneNumber, Image " +
+                "FROM tblUsers";
+            return conn.Query<UserEntity>(query).ToList();
+        }
+
+        public void InsertDapperRandomUser(int count)
+        {
+            var faker = new Faker<UserEntity>("uk")
+                .RuleFor(u => u.LastName, f => f.Person.LastName) // Random lastname
+                .RuleFor(u => u.FistName, f => f.Person.FirstName)
+                .RuleFor(u => u.Email, f => f.Person.Email)
+                .RuleFor(u => u.PhoneNumber, f => f.Person.Phone);
+
+            var users = faker.Generate(count); // Generate 20 dummy users
+            int i = 0;
+
+            foreach (var user in users)
+            {
+                using var conn = new SQLiteConnection(AppDatabase.ConnectionString);
+                string query = "INSERT INTO tblUsers (LastName, FistName, Email, PhoneNumber) " +
+                    "VALUES (@LastName, @FistName, @Email, @PhoneNumber) ";
+                conn.Execute(query, user);
+                InsertUserEvent(++i);
+            }
+        }
     }
 }

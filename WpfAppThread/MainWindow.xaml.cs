@@ -1,4 +1,5 @@
 ﻿using Infrastraction.Services;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,20 @@ namespace WpfAppThread
         public MainWindow()
         {
             InitializeComponent();
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var userService = new UserService();
+            var users = userService.GetUsers();
+            stopWatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopWatch.Elapsed;
+
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            MessageBox.Show("RunTime " + elapsedTime);
         }
 
         private void btnRun_Click(object sender, RoutedEventArgs e)

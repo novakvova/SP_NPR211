@@ -1,4 +1,5 @@
-﻿using Domain.Data.Entities;
+﻿using Domain.Constants;
+using Domain.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Domain.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("DataSource=puma.sqlite;");
+            optionsBuilder.UseSqlite(AppDatabase.ConnectionString);
         }
     }
 }
