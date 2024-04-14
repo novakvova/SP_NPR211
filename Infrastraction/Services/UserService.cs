@@ -61,10 +61,12 @@ namespace Infrastraction.Services
                     InsertRandomUser(0); //операція була скасована
                 }
             }
-
         }
 
-
+        public Task InsertRnadomUserAsync(int count)
+        {
+            return Task.Run(() => InsertRandomUser(count));
+        }
         public List<UserEntity> GetUsers()
         {
             using var conn = new SQLiteConnection(AppDatabase.ConnectionString);
@@ -92,6 +94,11 @@ namespace Infrastraction.Services
                 conn.Execute(query, user);
                 InsertUserEvent(++i);
             }
+        }
+
+        public Task InsertDapperRandomUserAsync(int count)
+        {
+            return Task.Run(() => InsertDapperRandomUser(count));
         }
     }
 }

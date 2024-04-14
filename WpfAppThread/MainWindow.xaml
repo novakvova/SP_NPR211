@@ -32,6 +32,10 @@
             Content="Перервать" HorizontalAlignment="Left" 
             Margin="186,101,0,0" VerticalAlignment="Top" 
             Height="33" Width="116" FontSize="14" Click="btnBreak_Click"/>
+        <Button x:Name="btnRun_Copy"
+            Content="Додати дані Dapper" HorizontalAlignment="Left" 
+            Margin="375,38,0,0" VerticalAlignment="Top" 
+            Height="33" Width="162" FontSize="14" Click="btnRun_Copy_Click"/>
 
 
 

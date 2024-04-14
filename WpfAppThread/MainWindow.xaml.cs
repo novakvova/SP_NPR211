@@ -31,48 +31,62 @@ namespace WpfAppThread
         {
             InitializeComponent();
 
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var userService = new UserService();
-            var users = userService.GetUsers();
-            stopWatch.Stop();
-            // Get the elapsed time as a TimeSpan value.
-            TimeSpan ts = stopWatch.Elapsed;
+            //Stopwatch stopWatch = new Stopwatch();
+            //stopWatch.Start();
+            //var userService = new UserService();
+            //var users = userService.GetUsers();
+            //stopWatch.Stop();
+            //// Get the elapsed time as a TimeSpan value.
+            //TimeSpan ts = stopWatch.Elapsed;
 
-            // Format and display the TimeSpan value.
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
-            MessageBox.Show("RunTime " + elapsedTime);
+            //// Format and display the TimeSpan value.
+            //string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            //    ts.Hours, ts.Minutes, ts.Seconds,
+            //    ts.Milliseconds / 10);
+            //MessageBox.Show("RunTime " + elapsedTime);
         }
 
-        private void btnRun_Click(object sender, RoutedEventArgs e)
+        private async void btnRun_Click(object sender, RoutedEventArgs e)
         {
             ctSource = new CancellationTokenSource();
             cancelletaionToken = ctSource.Token;
             //MessageBox.Show("Add items " + txtCount.Text);
             btnRun.IsEnabled = false;
             double count = double.Parse(txtCount.Text);
-            thread = new Thread(() =>
-                InsertItems(count));
 
-            thread.Start(); //стартуємо вториний потік, який додає користувачів в БД
-            //Запускаємо, але потік поки не блокуємо.
-            _manualEvent.Set();
-        }
+            //thread = new Thread(() =>
+            //    InsertItems(count));
 
-        private void InsertItems(double count)
-        {
+            //thread.Start(); //стартуємо вториний потік, який додає користувачів в БД
             UserService userService = new UserService(cancelletaionToken);
             userService.InsertUserEvent += UserService_InsertUserEvent;
 
-            Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
-            userService.InsertRandomUser((int)count);
+            pbStatus.Maximum = count;
+            btnRun.IsEnabled = true;
+            //Запускаємо, але потік поки не блокуємо.
+            _manualEvent.Set();
+
+            //виходимо із методу у вториний потік, але запамятовуємо точну повернення.
+            await userService.InsertRnadomUserAsync((int)count);
+            //повертаємося, яколи асихнроний метод відпрацював.
 
 
-            Dispatcher.Invoke(() => { btnRun.IsEnabled = true; });
-            
+            MessageBox.Show("Роботу завершено");
+
         }
+
+        //private void InsertItems(double count)
+        //{
+        //    UserService userService = new UserService(cancelletaionToken);
+        //    userService.InsertUserEvent += UserService_InsertUserEvent;
+
+        //    Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
+        //    userService.InsertRandomUser((int)count);
+
+
+        //    Dispatcher.Invoke(() => { btnRun.IsEnabled = true; });
+            
+        //}
 
         private void UserService_InsertUserEvent(int count)
         {
@@ -103,6 +117,38 @@ namespace WpfAppThread
             ctSource.Cancel();
             btnRun.IsEnabled = true;
             pbStatus.Value = 0;
+        }
+
+        private async void btnRun_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            ctSource = new CancellationTokenSource();
+            cancelletaionToken = ctSource.Token;
+            //MessageBox.Show("Add items " + txtCount.Text);
+            btnRun_Copy.IsEnabled = false;
+            double count = double.Parse(txtCount.Text);
+            UserService userService = new UserService(cancelletaionToken);
+            userService.InsertUserEvent += UserService_InsertUserEvent;
+
+            pbStatus.Maximum = count;
+            btnRun_Copy.IsEnabled = true;
+
+            await userService.InsertDapperRandomUserAsync((int)count);
+
+            //thread = new Thread(() =>
+            //{
+            //    UserService userService = new UserService(cancelletaionToken);
+            //    userService.InsertUserEvent += UserService_InsertUserEvent;
+
+            //    Dispatcher.Invoke(() => { pbStatus.Maximum = count; });
+            //    userService.InsertDapperRandomUser((int)count);
+
+
+            //    Dispatcher.Invoke(() => { btnRun.IsEnabled = true; });
+            //});
+
+            //thread.Start(); //стартуємо вториний потік, який додає користувачів в БД
+            //Запускаємо, але потік поки не блокуємо.
+            _manualEvent.Set();
         }
     }
 }
