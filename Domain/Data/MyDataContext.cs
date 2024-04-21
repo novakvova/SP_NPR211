@@ -16,6 +16,7 @@ namespace Domain.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(AppDatabase.ConnectionString);
+            
         }
     }
 }
