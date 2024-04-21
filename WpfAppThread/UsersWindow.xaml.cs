@@ -1,6 +1,8 @@
 ﻿using Domain.Data;
+using Infrastraction.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Security;
 using System.Text;
@@ -21,6 +23,8 @@ namespace WpfAppThread
     /// </summary>
     public partial class UsersWindow : Window
     {
+        private ObservableCollection<UserViewModel> _users = new ();
+
         public UsersWindow()
         {
             InitializeComponent();
@@ -30,8 +34,27 @@ namespace WpfAppThread
         {
             //MessageBox.Show("Hello Peter");
             MyDataContext myDataContext = new MyDataContext();
-            var users = myDataContext.Users.ToList();
-            dgSimple.ItemsSource = users;
+
+            var model = myDataContext.Users
+                .Select(x=> new UserViewModel
+                {
+                    Email = x.Email,
+                    Name = x.LastName+ " "+ x.FistName,
+                    Phone = x.PhoneNumber,
+                })
+                .ToList();
+            _users = new(model);
+            dgSimple.ItemsSource = _users;
+        }
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            _users.Add(new UserViewModel
+            {
+                Name="Test",
+                Phone="+380 98 89 899",
+                Email="email@test.com",
+            });
         }
     }
 }
