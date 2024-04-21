@@ -47,8 +47,7 @@ namespace Infrastraction.Services
                     {
                         _dataContext.Users.Add(user);
                         _dataContext.SaveChanges();
-                        if(InsertUserEvent != null)
-                            InsertUserEvent(++i);
+                        InsertUserEvent?.Invoke(++i);
 
                         if (cancellationToken.IsCancellationRequested)
                         {
